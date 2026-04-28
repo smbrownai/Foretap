@@ -61,15 +61,23 @@ struct SectionEditorView: View {
                 }
 
                 if allowsManualApps {
-                    Section("Apps") {
+                    Section("Apps (\(section.apps.count))") {
                         Button {
                             isAddingApps = true
                         } label: {
                             Label("Add Apps", systemImage: "plus")
                         }
-                        Text("\(section.apps.count) in this section")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+
+                        if section.apps.isEmpty {
+                            Text("No apps in this section")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        } else {
+                            ForEach(sortedApps) { app in
+                                appRow(app)
+                            }
+                            .onDelete(perform: removeApps)
+                        }
                     }
                 }
 
@@ -146,6 +154,41 @@ struct SectionEditorView: View {
         case .focusBased:      return "Focus-Based"
         case .manual:          return "Manual"
         }
+    }
+
+    private var sortedApps: [AppEntry] {
+        section.apps.sorted { $0.customSortIndex < $1.customSortIndex }
+    }
+
+    private func appRow(_ app: AppEntry) -> some View {
+        HStack(spacing: 12) {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(app.category.tint.gradient)
+                .frame(width: 32, height: 32)
+                .overlay(
+                    Image(systemName: app.category.sfSymbol)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.white)
+                )
+                .opacity(app.isInstalled ? 1.0 : 0.4)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(app.name)
+                if !app.isInstalled {
+                    Text("Not installed")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+
+    private func removeApps(at offsets: IndexSet) {
+        let apps = sortedApps
+        for index in offsets {
+            apps[index].section = nil
+        }
+        try? modelContext.save()
     }
 
     private func deleteSection() {

@@ -628,7 +628,7 @@
 				CODE_SIGN_ENTITLEMENTS = Fore/Fore.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = YRB6VBTSRV;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -637,6 +637,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Foretap;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSApplicationQueriesSchemes = "msteams ms-outlook ms-word ms-excel ms-powerpoint onenote slack zoomus notion todoist onepassword dbapi-2 googlegmail comgooglemaps googlecalendar googledrive googledocs whatsapp tg sgnl discord fb linkedin instagram twitter tiktok reddit snapchat spotify nflx youtube youtubemusic twitch waze uber lyft doordash ubereats com.amazon.mobile.shopping starbucks venmo paypal coinbase strava mfp kindle audible goodnotes obsidian bluesky";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -678,7 +679,7 @@
 				CODE_SIGN_ENTITLEMENTS = Fore/Fore.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = YRB6VBTSRV;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -687,6 +688,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Foretap;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSApplicationQueriesSchemes = "msteams ms-outlook ms-word ms-excel ms-powerpoint onenote slack zoomus notion todoist onepassword dbapi-2 googlegmail comgooglemaps googlecalendar googledrive googledocs whatsapp tg sgnl discord fb linkedin instagram twitter tiktok reddit snapchat spotify nflx youtube youtubemusic twitch waze uber lyft doordash ubereats com.amazon.mobile.shopping starbucks venmo paypal coinbase strava mfp kindle audible goodnotes obsidian bluesky";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

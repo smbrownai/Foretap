@@ -40,16 +40,48 @@ struct AppDatabaseLoader {
         }
     }
 
-    /// Returns the entries with their `isInstalled` value resolved by
-    /// `UIApplication.canOpenURL`. Must be called from the main actor.
+    /// Tri-state install status for an entry. iOS only lets `canOpenURL`
+    /// verify schemes listed in `LSApplicationQueriesSchemes` (capped at 50)
+    /// plus Apple system schemes. For schemes outside that set we genuinely
+    /// don't know — callers decide what to do with `unverified`.
+    enum InstallStatus {
+        case installed       // canOpenURL returned true
+        case notInstalled    // declared scheme, canOpenURL returned false
+        case unverified      // scheme not declared; iOS won't tell us
+    }
+
+    /// Resolves install status for each entry. Must be called from the main actor.
     @MainActor
-    static func resolveInstalled(_ entries: [AppDatabaseEntry]) -> [(entry: AppDatabaseEntry, isInstalled: Bool)] {
-        entries.map { entry in
-            let installed: Bool = {
-                guard let url = URL(string: entry.urlScheme) else { return false }
-                return UIApplication.shared.canOpenURL(url)
-            }()
-            return (entry, installed)
+    static func resolveInstalled(_ entries: [AppDatabaseEntry]) -> [(entry: AppDatabaseEntry, status: InstallStatus)] {
+        let declared = declaredQueriesSchemes()
+        return entries.map { entry in
+            (entry, status(for: entry.urlScheme, declared: declared))
         }
+    }
+
+    /// Convenience for code paths that only need the optimistic boolean
+    /// (treat `unverified` as installed). Used at AppEntry write time so
+    /// home-screen icons don't get dimmed for things we can't verify.
+    @MainActor
+    static func optimisticIsInstalled(scheme: String) -> Bool {
+        switch status(for: scheme, declared: declaredQueriesSchemes()) {
+        case .installed, .unverified: return true
+        case .notInstalled:           return false
+        }
+    }
+
+    @MainActor
+    private static func status(for urlScheme: String, declared: Set<String>) -> InstallStatus {
+        guard let url = URL(string: urlScheme),
+              let scheme = url.scheme?.lowercased() else {
+            return .notInstalled
+        }
+        if UIApplication.shared.canOpenURL(url) { return .installed }
+        return declared.contains(scheme) ? .notInstalled : .unverified
+    }
+
+    private static func declaredQueriesSchemes() -> Set<String> {
+        let raw = Bundle.main.object(forInfoDictionaryKey: "LSApplicationQueriesSchemes") as? [String] ?? []
+        return Set(raw.map { $0.lowercased() })
     }
 }

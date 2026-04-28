@@ -7,9 +7,13 @@ import SwiftUI
 import SwiftData
 
 struct SectionRowView: View {
-    @Environment(\.modelContext) private var modelContext
+    @AppStorage(AppPreferenceKey.iconSize) private var iconSizeRaw: String = AppIconSize.standard.rawValue
 
     @Bindable var section: LauncherSection
+
+    private var iconDimension: CGFloat {
+        (AppIconSize(rawValue: iconSizeRaw) ?? .standard).iconDimension
+    }
 
     /// Apps to render. HomeView resolves this via SectionSorter so each row
     /// stays cheap and the resolution happens once per refresh.
@@ -76,10 +80,7 @@ struct SectionRowView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: 14) {
                     ForEach(visible) { app in
-                        AppIconView(
-                            app: app,
-                            onRemove: isAutoPopulated ? nil : { remove(app) }
-                        )
+                        AppIconView(app: app)
                     }
 
                     if apps.count > section.maxVisible {
@@ -88,8 +89,8 @@ struct SectionRowView: View {
                         } label: {
                             VStack(spacing: 6) {
                                 Image(systemName: isExpanded ? "chevron.left" : "ellipsis")
-                                    .font(.system(size: 22, weight: .semibold))
-                                    .frame(width: 56, height: 56)
+                                    .font(.system(size: iconDimension * 0.4, weight: .semibold))
+                                    .frame(width: iconDimension, height: iconDimension)
                                     .background(Color.secondary.opacity(0.15), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                                 Text(isExpanded ? "Less" : "More")
                                     .font(.caption2)
@@ -102,9 +103,9 @@ struct SectionRowView: View {
                         Button(action: onAddApps) {
                             VStack(spacing: 6) {
                                 Image(systemName: "plus")
-                                    .font(.system(size: 22, weight: .semibold))
+                                    .font(.system(size: iconDimension * 0.4, weight: .semibold))
                                     .foregroundStyle(.secondary)
-                                    .frame(width: 56, height: 56)
+                                    .frame(width: iconDimension, height: iconDimension)
                                     .background(
                                         RoundedRectangle(cornerRadius: 12, style: .continuous)
                                             .strokeBorder(Color.secondary.opacity(0.4), style: StrokeStyle(lineWidth: 1.5, dash: [4]))
@@ -152,8 +153,4 @@ struct SectionRowView: View {
         }
     }
 
-    private func remove(_ app: AppEntry) {
-        app.section = nil
-        try? modelContext.save()
-    }
 }

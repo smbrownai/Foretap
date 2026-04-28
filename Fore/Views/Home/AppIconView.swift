@@ -13,7 +13,6 @@ struct AppIconView: View {
     @AppStorage(AppPreferenceKey.iconSize) private var iconSizeRaw: String = AppIconSize.standard.rawValue
 
     let app: AppEntry
-    var onRemove: (() -> Void)? = nil
 
     private var iconSize: CGFloat {
         (AppIconSize(rawValue: iconSizeRaw) ?? .standard).iconDimension
@@ -32,15 +31,6 @@ struct AppIconView: View {
         }
         .contentShape(Rectangle())
         .onTapGesture { launch() }
-        .contextMenu {
-            if let onRemove {
-                Button(role: .destructive) {
-                    onRemove()
-                } label: {
-                    Label("Remove from Section", systemImage: "minus.circle")
-                }
-            }
-        }
         .accessibilityLabel(Text(app.name))
         .accessibilityHint(Text("Launches \(app.name)"))
     }

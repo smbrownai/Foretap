@@ -17,14 +17,47 @@ struct ForeWidgetConfiguration: WidgetConfigurationIntent {
     static var description = IntentDescription("Pick which Fore section this widget shows.")
 
     /// User picks which section to display by long-pressing the widget. If
-    /// empty, the widget falls back to the first section in the snapshot
+    /// nil, the widget falls back to the first section in the snapshot
     /// (which honors any active Focus promotion since WidgetPublisher already
     /// applied SectionSorter.sortedSections).
-    @Parameter(title: "Section title")
-    var sectionTitle: String?
+    @Parameter(title: "Section")
+    var section: WidgetSectionEntity?
 
     init() {}
-    init(sectionTitle: String?) { self.sectionTitle = sectionTitle }
+    init(section: WidgetSectionEntity?) { self.section = section }
+}
+
+// MARK: - Section picker
+
+struct WidgetSectionEntity: AppEntity {
+    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Section"
+    static var defaultQuery = WidgetSectionQuery()
+
+    var id: UUID
+    var title: String
+    var emoji: String
+
+    var displayRepresentation: DisplayRepresentation {
+        DisplayRepresentation(title: "\(emoji) \(title)")
+    }
+}
+
+struct WidgetSectionQuery: EntityQuery {
+    func entities(for identifiers: [UUID]) async throws -> [WidgetSectionEntity] {
+        let snapshot = WidgetSnapshot.decode(from: SharedDefaults.widgetSnapshotData)
+        let byId = Dictionary(uniqueKeysWithValues: snapshot.sections.map { ($0.id, $0) })
+        return identifiers.compactMap { id in
+            guard let s = byId[id] else { return nil }
+            return WidgetSectionEntity(id: s.id, title: s.title, emoji: s.emoji)
+        }
+    }
+
+    func suggestedEntities() async throws -> [WidgetSectionEntity] {
+        let snapshot = WidgetSnapshot.decode(from: SharedDefaults.widgetSnapshotData)
+        return snapshot.sections
+            .sorted { $0.displayOrder < $1.displayOrder }
+            .map { WidgetSectionEntity(id: $0.id, title: $0.title, emoji: $0.emoji) }
+    }
 }
 
 // MARK: - Entry
@@ -37,8 +70,8 @@ struct ForeWidgetEntry: TimelineEntry {
     /// Returns the section the widget should render given its configuration.
     /// Falls back to the first section in the snapshot if no match.
     func resolvedSection() -> SnapshotSection? {
-        if let title = configuration.sectionTitle, !title.isEmpty,
-           let match = snapshot.sections.first(where: { $0.title == title }) {
+        if let id = configuration.section?.id,
+           let match = snapshot.sections.first(where: { $0.id == id }) {
             return match
         }
         return snapshot.sections.first

@@ -7,9 +7,25 @@ import SwiftUI
 
 struct AppRowView: View {
     let entry: AppDatabaseEntry
-    let isInstalled: Bool
+    let status: AppDatabaseLoader.InstallStatus
     let isSelected: Bool
     let onToggle: () -> Void
+
+    private var statusLabel: String? {
+        switch status {
+        case .installed:    return nil
+        case .notInstalled: return "Not installed"
+        case .unverified:   return "Status unknown"
+        }
+    }
+
+    private var iconOpacity: Double {
+        switch status {
+        case .installed:    return 1.0
+        case .notInstalled: return 0.4
+        case .unverified:   return 0.7
+        }
+    }
 
     var body: some View {
         Button(action: onToggle) {
@@ -24,8 +40,8 @@ struct AppRowView: View {
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                if !isInstalled {
-                    Text("Not installed")
+                if let statusLabel {
+                    Text(statusLabel)
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
@@ -47,6 +63,6 @@ struct AppRowView: View {
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(.white)
             )
-            .opacity(isInstalled ? 1.0 : 0.4)
+            .opacity(iconOpacity)
     }
 }

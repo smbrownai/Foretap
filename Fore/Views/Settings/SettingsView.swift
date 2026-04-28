@@ -33,6 +33,7 @@ struct SettingsView: View {
             Form {
                 addingSection
                 appearanceSection
+                hiddenSectionsSection
                 widgetSection
                 dataSection
                 aboutSection
@@ -92,6 +93,30 @@ struct SettingsView: View {
                 }
             }
             .pickerStyle(.segmented)
+        }
+    }
+
+    @ViewBuilder
+    private var hiddenSectionsSection: some View {
+        let hidden = sections.filter { !$0.isEnabled }
+        if !hidden.isEmpty {
+            Section {
+                ForEach(hidden) { section in
+                    HStack {
+                        Text("\(section.emoji) \(section.title)")
+                        Spacer()
+                        Button("Enable") {
+                            section.isEnabled = true
+                            try? modelContext.save()
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                }
+            } header: {
+                Text("Hidden Sections")
+            } footer: {
+                Text("Sections you've disabled in Edit. Tap Enable to bring them back to the home screen.")
+            }
         }
     }
 

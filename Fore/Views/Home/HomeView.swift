@@ -38,7 +38,7 @@ struct HomeView: View {
                     sectionList
                 }
             }
-            .navigationTitle("Fore")
+            .navigationTitle("Foretap")
             .toolbar { toolbar }
             .sheet(item: $editingSection) { section in
                 SectionEditorView(section: section)

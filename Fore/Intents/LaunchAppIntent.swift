@@ -3,19 +3,22 @@
 //  Fore
 //
 //  AppIntent invoked when the user taps an app icon inside a Fore widget.
-//  Records a usage event into the shared queue, then returns an OpenURLIntent
-//  so iOS launches the target app.
+//  Apple's OpenURLIntent only honors universal links, so for custom URL
+//  schemes (msteams://, spotify://, etc.) we set openAppWhenRun = true,
+//  let perform() run inside the Fore parent app, record the usage event,
+//  then call openURL ourselves.
 //
 //  Member of: Fore + ForeWidgetsExtension targets.
 //
 
 import AppIntents
 import Foundation
+import SwiftUI
 
 struct LaunchAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Launch App via Fore"
     static var description = IntentDescription("Opens the chosen app and records the launch.")
-    static var openAppWhenRun: Bool = false
+    static var openAppWhenRun: Bool = true
 
     @Parameter(title: "URL Scheme")
     var urlScheme: String
@@ -30,12 +33,12 @@ struct LaunchAppIntent: AppIntent {
         self.appName = appName
     }
 
-    func perform() async throws -> some IntentResult & OpensIntent {
+    @MainActor
+    func perform() async throws -> some IntentResult {
         SharedUsageQueue.append(scheme: urlScheme)
-
-        guard let url = URL(string: urlScheme) else {
-            return .result(opensIntent: OpenURLIntent(URL(string: "about:blank")!))
+        if let url = URL(string: urlScheme) {
+            EnvironmentValues().openURL(url)
         }
-        return .result(opensIntent: OpenURLIntent(url))
+        return .result()
     }
 }
