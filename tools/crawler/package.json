@@ -1,0 +1,15 @@
+{
+  "name": "fore-crawler",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Crawls iTunes RSS + Lookup APIs to build Fore/Database/AppDatabase.json",
+  "scripts": {
+    "crawl": "node crawl.js",
+    "crawl:offline": "node crawl.js --offline",
+    "crawl:small": "node crawl.js --apps-count 1000"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
