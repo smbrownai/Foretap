@@ -14,12 +14,16 @@ struct AddAppsView: View {
     @Bindable var section: LauncherSection
 
     @State private var search: String = ""
-    @State private var selected: Set<String> = []                              // entry IDs (bundleId)
+    @State private var selected: Set<String> = []                              // entry IDs
     @State private var allEntries: [AppDatabaseEntry] = []
     @State private var statusByID: [String: AppDatabaseLoader.InstallStatus] = [:]
     @State private var isLoading: Bool = true
-    @State private var onlyShowDetected: Bool = true
     @State private var customPrefill: AddCustomAppPrefill? = nil
+
+    /// Cap search results so we never render thousands of rows from one
+    /// vague query. The picker is for adding a few apps at a time;
+    /// anyone who needs more can refine.
+    private static let searchResultsCap = 80
 
     var body: some View {
         NavigationStack {
@@ -35,7 +39,11 @@ struct AddAppsView: View {
                             .disabled(selected.isEmpty)
                     }
                 }
-                .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always))
+                .searchable(
+                    text: $search,
+                    placement: .navigationBarDrawer(displayMode: .always),
+                    prompt: "Search 5,500+ apps"
+                )
                 .task { await load() }
                 .sheet(item: $customPrefill) { prefill in
                     AddCustomAppView(prefill: prefill) { name, scheme, category in
@@ -51,62 +59,123 @@ struct AddAppsView: View {
             ProgressView().controlSize(.large)
         } else {
             List {
+                // "Add Custom App" + helper section is always available.
                 Section {
-                    Toggle("Only show apps detected on this device", isOn: $onlyShowDetected)
-                        .font(.caption)
                     Button {
                         customPrefill = .blank
                     } label: {
                         Label("Add Custom App…", systemImage: "plus.app")
                     }
                 } footer: {
-                    Text(onlyShowDetected
-                         ? "iOS only lets us verify ~50 schemes. Apps outside that set are hidden — toggle off to browse the full list."
-                         : "Apps marked “Status unknown” can't be verified by iOS. They'll still launch if installed.")
+                    Text("Search the App Store catalog above, or add any app by URL scheme.")
                         .font(.caption2)
                 }
 
-                Section {
-                    ForEach(filtered) { entry in
-                        AppRowView(
-                            entry: entry,
-                            status: statusByID[entry.id] ?? .noScheme,
-                            isSelected: selected.contains(entry.id),
-                            onToggle: { handleTap(entry) }
-                        )
-                    }
+                if isSearching {
+                    searchResultsSection
+                } else {
+                    detectedSection
                 }
             }
-            .listStyle(.plain)
+            .listStyle(.insetGrouped)
         }
     }
 
-    private var filtered: [AppDatabaseEntry] {
-        let alreadyInSection: Set<String> = Set(section.apps.compactMap { app in
-            // Match an existing AppEntry to a database entry primarily by
-            // urlScheme; that's what we know about the AppEntry. Bundle IDs
-            // for already-added apps aren't tracked separately.
-            app.urlScheme
-        })
+    private var isSearching: Bool {
+        !search.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
 
+    @ViewBuilder
+    private var detectedSection: some View {
+        let detected = detectedEntries
+        Section {
+            if detected.isEmpty {
+                Text("No apps detected — start typing above to search the catalog.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(detected) { entry in
+                    AppRowView(
+                        entry: entry,
+                        status: .installed,
+                        isSelected: selected.contains(entry.id),
+                        onToggle: { handleTap(entry) }
+                    )
+                }
+            }
+        } header: {
+            Text("On this device (\(detected.count))")
+        } footer: {
+            Text("iOS only lets us verify ~50 schemes, so this list is partial. Search for any other app above.")
+                .font(.caption2)
+        }
+    }
+
+    @ViewBuilder
+    private var searchResultsSection: some View {
+        let results = searchResults
+        Section {
+            if results.isEmpty {
+                Text("No matches.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(results) { entry in
+                    AppRowView(
+                        entry: entry,
+                        status: statusByID[entry.id] ?? .noScheme,
+                        isSelected: selected.contains(entry.id),
+                        onToggle: { handleTap(entry) }
+                    )
+                }
+                if results.count == Self.searchResultsCap {
+                    Text("Showing first \(Self.searchResultsCap) — refine search for more specific results.")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        } header: {
+            Text("Search results")
+        }
+    }
+
+    /// Apps where canOpenURL returned true. Always sorted by name; small
+    /// list (typically 5–20 items) so we don't bother capping.
+    private var detectedEntries: [AppDatabaseEntry] {
+        let alreadyInSection = Set(section.apps.compactMap(\.urlScheme))
         return allEntries.filter { entry in
-            if let scheme = entry.urlScheme, alreadyInSection.contains(scheme) { return false }
-            if onlyShowDetected && statusByID[entry.id] != .installed { return false }
-            if search.isEmpty { return true }
-
-            let needle = search.lowercased()
-            if entry.name.lowercased().contains(needle) { return true }
-            if let dev = entry.developer, dev.lowercased().contains(needle) { return true }
-            if let genre = entry.primaryGenre, genre.lowercased().contains(needle) { return true }
-            return false
+            statusByID[entry.id] == .installed
+                && !(entry.urlScheme.map { alreadyInSection.contains($0) } ?? false)
         }
     }
 
-    /// Tap behavior is dual-mode:
-    ///   - If the entry has a known urlScheme, toggle bulk selection.
-    ///   - If the scheme is missing, route into Add Custom App pre-filled
-    ///     with the entry's name + category so the user can supply a
-    ///     scheme without re-typing everything.
+    private var searchResults: [AppDatabaseEntry] {
+        let alreadyInSection = Set(section.apps.compactMap(\.urlScheme))
+        let needle = search.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+
+        var hits: [AppDatabaseEntry] = []
+        hits.reserveCapacity(Self.searchResultsCap)
+
+        for entry in allEntries {
+            if let scheme = entry.urlScheme, alreadyInSection.contains(scheme) { continue }
+            if matches(entry: entry, needle: needle) {
+                hits.append(entry)
+                if hits.count >= Self.searchResultsCap { break }
+            }
+        }
+        return hits
+    }
+
+    private func matches(entry: AppDatabaseEntry, needle: String) -> Bool {
+        if entry.name.lowercased().contains(needle) { return true }
+        if let dev = entry.developer, dev.lowercased().contains(needle) { return true }
+        if let genre = entry.primaryGenre, genre.lowercased().contains(needle) { return true }
+        return false
+    }
+
+    /// Tap behavior: bulk-select if the entry has a known scheme,
+    /// otherwise route into Add Custom App pre-filled with what we
+    /// know so the user just supplies the missing scheme.
     private func handleTap(_ entry: AppDatabaseEntry) {
         if entry.hasScheme {
             if selected.contains(entry.id) {
@@ -173,8 +242,6 @@ struct AddAppsView: View {
             guard let dbEntry = entriesByID[entryID],
                   let scheme = dbEntry.urlScheme else { continue }
 
-            // Reuse existing AppEntry for this scheme if we have one
-            // (e.g. user added the app to a different section previously).
             let existing: AppEntry? = {
                 let descriptor = FetchDescriptor<AppEntry>(
                     predicate: #Predicate { $0.urlScheme == scheme }

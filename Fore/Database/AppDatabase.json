@@ -5875,9 +5875,9 @@
     "primaryGenre": "Productivity",
     "category": "productivity",
     "iconURL": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/83/8b/ad/838badba-26df-32a9-e76f-40efecfaf825/AppIcon-outlook.prod-0-0-1x_U007epad-0-1-0-0-0-85-220.png/256x256bb.jpg",
-    "urlScheme": null,
-    "schemeSource": null,
-    "verifiedAt": null
+    "urlScheme": "ms-outlook://",
+    "schemeSource": "official",
+    "verifiedAt": "2026-04-29"
   },
   {
     "id": "com.grammarly.keyboard",
@@ -16087,9 +16087,9 @@
     "primaryGenre": "Productivity",
     "category": "productivity",
     "iconURL": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/2a/44/cd/2a44cd77-a334-6589-7a6c-5cd63a443eec/AppIcon_Production-0-0-1x_U007epad-0-4-85-220.png/256x256bb.jpg",
-    "urlScheme": null,
-    "schemeSource": null,
-    "verifiedAt": null
+    "urlScheme": "copilot-money://",
+    "schemeSource": "official",
+    "verifiedAt": "2026-04-29"
   },
   {
     "id": "com.sindresorhus.Aiko",
@@ -61236,18 +61236,6 @@
     "verifiedAt": null
   },
   {
-    "id": "com.yueyou.cyreader",
-    "trackId": 1387717110,
-    "name": "七猫小说-看小说电子书的阅读神器",
-    "developer": "Shanghai Seven-Cat Culture Media Co.,Ltd.",
-    "primaryGenre": "Book",
-    "category": "other",
-    "iconURL": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/b2/55/8b/b2558bea-1b44-6740-ab4e-353ff7188dd5/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/256x256bb.jpg",
-    "urlScheme": null,
-    "schemeSource": null,
-    "verifiedAt": null
-  },
-  {
     "id": "com.centene.dxe.medicaid.prod",
     "trackId": 6736384472,
     "name": "Health Insurance Portal",
@@ -61824,18 +61812,6 @@
     "verifiedAt": null
   },
   {
-    "id": "kr.girigo",
-    "trackId": 6749406672,
-    "name": "기리고",
-    "developer": "KWONSIWON",
-    "primaryGenre": "Entertainment",
-    "category": "entertainment",
-    "iconURL": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/ef/4e/9c/ef4e9c32-a212-ea44-d1d6-dcad43f453b4/PremiereAppIcon-0-0-1x_U007ephone-0-1-85-220.png/256x256bb.jpg",
-    "urlScheme": null,
-    "schemeSource": null,
-    "verifiedAt": null
-  },
-  {
     "id": "org.coursera.coursera",
     "trackId": 736535961,
     "name": "Coursera: Grow your career",
@@ -61999,18 +61975,6 @@
     "primaryGenre": "Photo & Video",
     "category": "entertainment",
     "iconURL": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/75/ec/8a/75ec8ae6-6b19-a726-cf0c-73af6b36d578/AppIcon.Bolt.TV.Light-0-0-1x_U007epad-0-1-0-P3-85-220.png/256x256bb.jpg",
-    "urlScheme": null,
-    "schemeSource": null,
-    "verifiedAt": null
-  },
-  {
-    "id": "com.regoapps.CopRadioPro",
-    "trackId": 482833772,
-    "name": "Police Scanner + Fire Radio",
-    "developer": "Rego Apps",
-    "primaryGenre": "News",
-    "category": "news",
-    "iconURL": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/9a/5d/c8/9a5dc88f-28ca-d7df-604b-19a1536d262f/icon-0-0-1x_U007epad-0-1-sRGB-85-220.png/256x256bb.jpg",
     "urlScheme": null,
     "schemeSource": null,
     "verifiedAt": null
@@ -63156,18 +63120,6 @@
     "verifiedAt": null
   },
   {
-    "id": "com.soccer.dramalive",
-    "trackId": 6747519955,
-    "name": "دراما لايف",
-    "developer": "Zakaria Ben Mhamed",
-    "primaryGenre": "News",
-    "category": "news",
-    "iconURL": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/0a/af/1b/0aaf1bee-e84a-b18c-e548-f8a49c216cf0/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/256x256bb.jpg",
-    "urlScheme": null,
-    "schemeSource": null,
-    "verifiedAt": null
-  },
-  {
     "id": "com.outsitenetworks.citgo",
     "trackId": 783482580,
     "name": "Club CITGO - Gas Rewards",
@@ -64087,18 +64039,6 @@
     "primaryGenre": "Finance",
     "category": "finance",
     "iconURL": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/43/c2/5e/43c25e5b-5b7c-8fb8-424f-551040a14658/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/256x256bb.jpg",
-    "urlScheme": null,
-    "schemeSource": null,
-    "verifiedAt": null
-  },
-  {
-    "id": "com.seamobitech.UniversalTVRemoteControl",
-    "trackId": 6553976921,
-    "name": "Universal TV Remote™ Control",
-    "developer": "SEAMOBI TECH PTE LTD",
-    "primaryGenre": "Entertainment",
-    "category": "entertainment",
-    "iconURL": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/0a/c9/01/0ac9012c-1c5b-fb6b-262a-2a07e7757c18/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/256x256bb.jpg",
     "urlScheme": null,
     "schemeSource": null,
     "verifiedAt": null
@@ -65304,18 +65244,6 @@
     "verifiedAt": "2026-04-29"
   },
   {
-    "id": "legacy:ms-outlook://",
-    "trackId": null,
-    "name": "Outlook",
-    "developer": null,
-    "primaryGenre": null,
-    "category": "productivity",
-    "iconURL": null,
-    "urlScheme": "ms-outlook://",
-    "schemeSource": "official",
-    "verifiedAt": "2026-04-29"
-  },
-  {
     "id": "legacy:hey://",
     "trackId": null,
     "name": "Hey",
@@ -65516,18 +65444,6 @@
     "category": "finance",
     "iconURL": null,
     "urlScheme": "mint://",
-    "schemeSource": "official",
-    "verifiedAt": "2026-04-29"
-  },
-  {
-    "id": "legacy:copilot-money://",
-    "trackId": null,
-    "name": "Copilot",
-    "developer": null,
-    "primaryGenre": null,
-    "category": "finance",
-    "iconURL": null,
-    "urlScheme": "copilot-money://",
     "schemeSource": "official",
     "verifiedAt": "2026-04-29"
   },

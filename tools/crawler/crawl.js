@@ -113,23 +113,60 @@ async function loadExisting(filePath) {
   }
 }
 
+function normalizeName(name) {
+  return (name || '')
+    .toLowerCase()
+    .replace(/[‘’']/g, '')         // smart quotes / apostrophes
+    .replace(/[^a-z0-9]+/g, ' ')             // punctuation -> space
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+const VENDOR_PREFIXES = [
+  'microsoft', 'google', 'apple', 'amazon', 'meta', 'samsung',
+];
+
 function buildSchemeMap(existing) {
+  // Map from a set of normalized name variants -> scheme. Multiple keys
+  // can point at the same scheme so we can match permissively without
+  // having to scan a list at lookup time.
   const map = new Map();
   for (const entry of existing) {
-    const name = (entry.name || '').toLowerCase().trim();
-    if (name && entry.urlScheme) {
-      map.set(name, entry.urlScheme);
+    const scheme = entry.urlScheme;
+    if (!scheme) continue;
+    const norm = normalizeName(entry.name);
+    if (!norm) continue;
+    map.set(norm, scheme);
+    // Also register vendor-prefixed variants so an iTunes "Microsoft
+    // Outlook" matches a curated "Outlook" entry.
+    for (const v of VENDOR_PREFIXES) {
+      map.set(`${v} ${norm}`, scheme);
     }
   }
   return map;
+}
+
+/// Try a few normalization strategies against the known-scheme map.
+function findScheme(itunesName, knownSchemes) {
+  const norm = normalizeName(itunesName);
+  if (!norm) return null;
+  if (knownSchemes.has(norm)) return knownSchemes.get(norm);
+  // Strip a leading vendor prefix from the iTunes name and retry —
+  // catches "Microsoft Outlook" / "Google Sheets" / etc. against curated
+  // entries that omit the prefix.
+  const tokens = norm.split(' ');
+  if (tokens.length > 1 && VENDOR_PREFIXES.includes(tokens[0])) {
+    const stripped = tokens.slice(1).join(' ');
+    if (knownSchemes.has(stripped)) return knownSchemes.get(stripped);
+  }
+  return null;
 }
 
 // ---- Output construction -------------------------------------------------
 
 function buildEntry(lookup, knownSchemes, today) {
   const name = lookup.trackName || lookup.collectionName || '';
-  const nameKey = name.toLowerCase().trim();
-  const scheme = knownSchemes.get(nameKey) || null;
+  const scheme = findScheme(name, knownSchemes);
   const genre = lookup.primaryGenreName || null;
   return {
     id: lookup.bundleId || `track:${lookup.trackId}`,
@@ -239,13 +276,16 @@ async function main() {
     .map(r => buildEntry(r, knownSchemes, today));
 
   // Phase 4: append legacy entries that didn't surface in iTunes results.
-  // Match by case-insensitive name; anything still missing keeps its
-  // old data (no icon) so we don't drop curated entries.
-  const seenNames = new Set(output.map(e => (e.name || '').toLowerCase().trim()));
+  // Skip a legacy entry if either (a) its scheme is already attached to
+  // an iTunes row (the matcher succeeded — adding it again would be a
+  // duplicate) or (b) its normalized name already exists in the output.
+  const seenNames = new Set(output.map(e => normalizeName(e.name)));
+  const seenSchemes = new Set(output.map(e => e.urlScheme).filter(Boolean));
   let legacyAdded = 0;
   for (const entry of existing) {
-    const nameKey = (entry.name || '').toLowerCase().trim();
+    const nameKey = normalizeName(entry.name);
     if (seenNames.has(nameKey)) continue;
+    if (entry.urlScheme && seenSchemes.has(entry.urlScheme)) continue;
     output.push(migrateLegacyEntry(entry, today));
     legacyAdded++;
   }
