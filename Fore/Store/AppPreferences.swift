@@ -36,7 +36,14 @@ enum AppIconSize: String, CaseIterable, Identifiable {
 }
 
 enum AppPreferenceKey {
-    static let iconSize             = "fore.pref.iconSize"
-    static let defaultSectionTitle  = "fore.pref.defaultSectionTitle"
+    static let iconSize              = "fore.pref.iconSize"
+    static let defaultSectionTitle   = "fore.pref.defaultSectionTitle"
     static let didCompleteOnboarding = "fore.pref.didCompleteOnboarding"
+
+    /// When true, after the user successfully launches an app whose
+    /// scheme they typed in via Add Custom App, Fore submits the
+    /// (bundleId, scheme) pair to the backend so future users see
+    /// it auto-filled. Default ON; user can flip it in Settings.
+    /// See SchemeContribution + tools/backend.
+    static let contributeSchemes     = "fore.pref.contributeSchemes"
 }

@@ -47,7 +47,10 @@ struct AddAppToSectionIntent: AppIntent {
             return .result(dialog: "Couldn't find a section named \(sectionTitle).")
         }
 
-        let scheme = dbEntry.urlScheme
+        guard let scheme = dbEntry.urlScheme, !scheme.isEmpty else {
+            return .result(dialog: "\(dbEntry.name) doesn't have a known launch scheme in Fore's database yet.")
+        }
+
         let appDescriptor = FetchDescriptor<AppEntry>(
             predicate: #Predicate { $0.urlScheme == scheme }
         )
@@ -59,7 +62,7 @@ struct AddAppToSectionIntent: AppIntent {
         } else {
             app = AppEntry(
                 name: dbEntry.name,
-                urlScheme: dbEntry.urlScheme,
+                urlScheme: scheme,
                 category: dbEntry.category
             )
             context.insert(app)

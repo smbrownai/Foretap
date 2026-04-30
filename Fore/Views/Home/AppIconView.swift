@@ -51,11 +51,16 @@ struct AppIconView: View {
 
         guard let url = URL(string: app.urlScheme) else { return }
         let scheme = app.urlScheme
+        let bundleId = app.bundleId
+        let appName = app.name
 
         Task { @MainActor in
             let opened = await UIApplication.shared.open(url)
             if opened {
                 UsageTracker.record(scheme: scheme, app: app, in: modelContext)
+                // Successful open is the signal that this scheme really
+                // launches this app — submit it for community verification.
+                SchemeContribution.submitIfEligible(bundleId: bundleId, scheme: scheme, name: appName)
             }
         }
     }

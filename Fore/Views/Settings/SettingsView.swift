@@ -16,6 +16,7 @@ struct SettingsView: View {
 
     @AppStorage(AppPreferenceKey.iconSize) private var iconSizeRaw: String = AppIconSize.standard.rawValue
     @AppStorage(AppPreferenceKey.defaultSectionTitle) private var defaultSectionTitle: String = ""
+    @AppStorage(AppPreferenceKey.contributeSchemes) private var contributeSchemes: Bool = true
 
     @State private var exportURL: URL? = nil
     @State private var exportError: String? = nil
@@ -35,6 +36,7 @@ struct SettingsView: View {
                 appearanceSection
                 hiddenSectionsSection
                 widgetSection
+                contributionSection
                 dataSection
                 aboutSection
             }
@@ -129,6 +131,17 @@ struct SettingsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+        }
+    }
+
+    private var contributionSection: some View {
+        Section {
+            Toggle("Help build the catalog", isOn: $contributeSchemes)
+        } header: {
+            Text("Community")
+        } footer: {
+            Text("When you add a custom app and successfully launch it, Fore can share the (bundle ID, URL scheme) pair anonymously so other users find that app prefilled. No identity, history, or app inventory is shared — only the verified scheme + an anonymous device hash for deduplication.")
+                .font(.caption2)
         }
     }
 

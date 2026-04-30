@@ -1,0 +1,19 @@
+{
+  "name": "fore-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Worker for Fore: scheme submissions + database CDN",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "migrate": "wrangler d1 execute fore-db --file=migrations/0001_init.sql --remote",
+    "migrate:local": "wrangler d1 execute fore-db --file=migrations/0001_init.sql --local",
+    "upload-base": "wrangler r2 object put fore-db/base/AppDatabase.json --file=../../Fore/Database/AppDatabase.json --remote",
+    "promote": "curl -X POST -H \"Authorization: Bearer $ADMIN_TOKEN\" $WORKER_URL/admin/promote"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240725.0",
+    "typescript": "^5.4.0",
+    "wrangler": "^3.78.0"
+  }
+}

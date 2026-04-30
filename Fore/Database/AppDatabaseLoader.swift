@@ -50,10 +50,21 @@ struct AppDatabaseLoader {
     static let bundledFileName = "AppDatabase"
     static let bundledFileExtension = "json"
 
+    /// Loads the database, preferring the cached copy refreshed from
+    /// the backend (Phase B+C) over the bundled fallback. If the cache
+    /// is missing, corrupt, or empty, we silently fall back to the
+    /// bundled JSON so the app always has a working corpus.
     static func loadBundledEntries(bundle: Bundle = .main) throws -> [AppDatabaseEntry] {
+        if let cached = try? loadEntries(from: DatabaseRefresh.cacheURL), !cached.isEmpty {
+            return cached
+        }
         guard let url = bundle.url(forResource: bundledFileName, withExtension: bundledFileExtension) else {
             throw AppDatabaseLoaderError.fileNotFound
         }
+        return try loadEntries(from: url)
+    }
+
+    private static func loadEntries(from url: URL) throws -> [AppDatabaseEntry] {
         let data = try Data(contentsOf: url)
         do {
             return try JSONDecoder().decode([AppDatabaseEntry].self, from: data)

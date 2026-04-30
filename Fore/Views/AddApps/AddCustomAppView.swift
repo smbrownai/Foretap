@@ -14,15 +14,20 @@ struct AddCustomAppPrefill: Identifiable {
     let name: String
     let scheme: String
     let category: AppCategory
+    /// Bundle identifier the prefill was sourced from (when the user
+    /// tapped a database row with no scheme). `nil` for the standalone
+    /// "Add Custom App" button. Carried through to AppEntry so we can
+    /// submit (bundleId, scheme) once the launch verifies.
+    let bundleId: String?
 
-    static let blank = AddCustomAppPrefill(name: "", scheme: "", category: .other)
+    static let blank = AddCustomAppPrefill(name: "", scheme: "", category: .other, bundleId: nil)
 }
 
 struct AddCustomAppView: View {
     @Environment(\.dismiss) private var dismiss
 
     let prefill: AddCustomAppPrefill
-    let onSave: (_ name: String, _ urlScheme: String, _ category: AppCategory) -> Void
+    let onSave: (_ name: String, _ urlScheme: String, _ category: AppCategory, _ bundleId: String?) -> Void
 
     @State private var name: String = ""
     @State private var schemeInput: String = ""
@@ -30,7 +35,7 @@ struct AddCustomAppView: View {
 
     init(
         prefill: AddCustomAppPrefill = .blank,
-        onSave: @escaping (_ name: String, _ urlScheme: String, _ category: AppCategory) -> Void
+        onSave: @escaping (_ name: String, _ urlScheme: String, _ category: AppCategory, _ bundleId: String?) -> Void
     ) {
         self.prefill = prefill
         self.onSave = onSave
@@ -90,7 +95,8 @@ struct AddCustomAppView: View {
                         onSave(
                             name.trimmingCharacters(in: .whitespacesAndNewlines),
                             normalizedScheme,
-                            category
+                            category,
+                            prefill.bundleId
                         )
                         dismiss()
                     }

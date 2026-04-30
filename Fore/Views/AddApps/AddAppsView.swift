@@ -46,8 +46,8 @@ struct AddAppsView: View {
                 )
                 .task { await load() }
                 .sheet(item: $customPrefill) { prefill in
-                    AddCustomAppView(prefill: prefill) { name, scheme, category in
-                        addCustom(name: name, scheme: scheme, category: category)
+                    AddCustomAppView(prefill: prefill) { name, scheme, category, bundleId in
+                        addCustom(name: name, scheme: scheme, category: category, bundleId: bundleId)
                     }
                 }
         }
@@ -184,7 +184,16 @@ struct AddAppsView: View {
                 selected.insert(entry.id)
             }
         } else {
-            customPrefill = AddCustomAppPrefill(name: entry.name, scheme: "", category: entry.category)
+            // Carry the database row's bundleId into the prefill so the
+            // resulting AppEntry knows which app it represents — that's
+            // what unlocks community submission once the scheme launches.
+            let bundleId = entry.id.hasPrefix("legacy:") ? nil : entry.id
+            customPrefill = AddCustomAppPrefill(
+                name: entry.name,
+                scheme: "",
+                category: entry.category,
+                bundleId: bundleId
+            )
         }
     }
 
@@ -202,7 +211,7 @@ struct AddAppsView: View {
         isLoading = false
     }
 
-    private func addCustom(name: String, scheme: String, category: AppCategory) {
+    private func addCustom(name: String, scheme: String, category: AppCategory, bundleId: String?) {
         let descriptor = FetchDescriptor<AppEntry>(
             predicate: #Predicate { $0.urlScheme == scheme }
         )
@@ -216,13 +225,15 @@ struct AddAppsView: View {
             existing.name = name
             existing.category = category
             existing.isInstalled = isInstalled
+            if existing.bundleId == nil { existing.bundleId = bundleId }
             app = existing
         } else {
             app = AppEntry(
                 name: name,
                 urlScheme: scheme,
                 category: category,
-                isInstalled: isInstalled
+                isInstalled: isInstalled,
+                bundleId: bundleId
             )
             modelContext.insert(app)
         }
@@ -251,14 +262,19 @@ struct AddAppsView: View {
 
             let app: AppEntry
             if let existing {
+                if existing.bundleId == nil && !dbEntry.id.hasPrefix("legacy:") {
+                    existing.bundleId = dbEntry.id
+                }
                 app = existing
             } else {
                 let optimisticInstalled = statusByID[entryID] != .notInstalled
+                let bundleId = dbEntry.id.hasPrefix("legacy:") ? nil : dbEntry.id
                 app = AppEntry(
                     name: dbEntry.name,
                     urlScheme: scheme,
                     category: dbEntry.category,
-                    isInstalled: optimisticInstalled
+                    isInstalled: optimisticInstalled,
+                    bundleId: bundleId
                 )
                 modelContext.insert(app)
             }

@@ -1,0 +1,27 @@
+name = "fore-db"
+main = "src/worker.ts"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Bind the D1 database that holds submissions + verified-schemes view.
+# Create with:  wrangler d1 create fore-db
+# Then paste the database_id here:
+[[d1_databases]]
+binding = "DB"
+database_name = "fore-db"
+database_id = "REPLACE_WITH_D1_ID"
+
+# R2 bucket that serves apps.json.gz to clients and stores the
+# crawler-generated base AppDatabase.json that promote() merges from.
+# Create with:  wrangler r2 bucket create fore-db
+[[r2_buckets]]
+binding = "APPS_R2"
+bucket_name = "fore-db"
+
+# Run /admin/promote nightly so newly-verified schemes ship to clients
+# without manual intervention. Adjust schedule as you like.
+[triggers]
+crons = ["17 4 * * *"]   # 04:17 UTC daily
+
+# Set with:  wrangler secret put ADMIN_TOKEN
+# (used to gate /admin/promote and the cron-driven self-call)
