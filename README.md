@@ -118,4 +118,4 @@ code:
 
 ## License
 
-Private project. Not open source.
+Released under the MIT License. See [`LICENSE`](LICENSE) for the full text.
