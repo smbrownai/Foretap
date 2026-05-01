@@ -14,8 +14,8 @@ import Foundation
 
 enum BackendConfig {
     /// Replace with the URL Wrangler prints after `npm run deploy`.
-    /// Example:  https://fore-db.your-account.workers.dev
-    static let baseURL = URL(string: "https://fore-db.example.workers.dev")!
+    /// Example:  https://fore-db.foretap.workers.dev
+    static let baseURL = URL(string: "https://fore-db.foretap.workers.dev")!
 
     static var submissionsEndpoint: URL { baseURL.appending(path: "v1/schemes") }
     static var databaseEndpoint: URL { baseURL.appending(path: "v1/apps.json.gz") }
@@ -24,6 +24,6 @@ enum BackendConfig {
     /// + refresh helpers gate on this so debug builds don't hammer
     /// example.workers.dev with traffic.
     static var isConfigured: Bool {
-        baseURL.host != "fore-db.example.workers.dev"
+        baseURL.host != "fore-db.foretap.workers.dev"
     }
 }

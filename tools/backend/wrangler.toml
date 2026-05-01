@@ -9,7 +9,7 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "DB"
 database_name = "fore-db"
-database_id = "REPLACE_WITH_D1_ID"
+database_id = "c6a5d38d-3369-4604-829c-e67ca4ed36bd"
 
 # R2 bucket that serves apps.json.gz to clients and stores the
 # crawler-generated base AppDatabase.json that promote() merges from.
