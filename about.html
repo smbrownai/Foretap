@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>About Foretap</title>
+<link rel="icon" type="image/png" href="fore_icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Neutrals */
+    --ink: #0B0D10;
+    --paper: #FAFAF7;
+    --paper-2: #F3F3EE;
+    --paper-3: #EAEAE3;
+
+    --gray-600: #555B66;
+    --gray-500: #767C86;
+    --gray-400: #9BA0A8;
+
+    /* Accents */
+    --signal: #3B5BDB;
+    --signal-ink: #2842B8;
+    --signal-soft: #E3E8FA;
+
+    /* Foreground / background */
+    --bg-1: var(--paper);
+    --bg-2: var(--paper-2);
+    --fg-1: var(--ink);
+    --fg-2: var(--gray-600);
+    --fg-3: var(--gray-500);
+
+    --line: #E6E6E1;
+    --line-soft: #F0F0EA;
+
+    /* Type */
+    --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+    --fs-12: 12px; --fs-13: 13px; --fs-14: 14px; --fs-16: 16px;
+    --fs-18: 18px; --fs-22: 22px; --fs-28: 28px; --fs-36: 36px; --fs-48: 48px;
+
+    --lh-tight: 1.2;
+    --lh-ui: 1.4;
+    --lh-body: 1.5;
+
+    --ls-tight: -0.01em;
+    --ls-label: 0.08em;
+    --ls-mono: -0.01em;
+
+    --w-regular: 400;
+    --w-medium: 500;
+    --w-semibold: 600;
+
+    /* Spacing (4px grid) */
+    --s-2: 4px; --s-3: 6px; --s-4: 8px; --s-5: 12px;
+    --s-6: 16px; --s-7: 20px; --s-8: 24px; --s-9: 32px;
+    --s-10: 40px; --s-11: 48px; --s-12: 64px;
+
+    /* Radii */
+    --r-sm: 4px; --r-md: 6px; --r-lg: 8px; --r-pill: 999px;
+
+    /* Shadows */
+    --shadow-1: 0 1px 0 rgba(11, 13, 16, 0.04), 0 1px 2px rgba(11, 13, 16, 0.04);
+    --shadow-2: 0 4px 12px rgba(11, 13, 16, 0.08), 0 1px 3px rgba(11, 13, 16, 0.06);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink-2: #14171C;
+      --ink-3: #1E2126;
+
+      --bg-1: #0B0D10;
+      --bg-2: #14171C;
+      --fg-1: #FAFAF7;
+      --fg-2: #BEC2C8;
+      --fg-3: #9BA0A8;
+
+      --line: #1E2126;
+      --line-soft: #16191E;
+
+      --signal-soft: #1B2450;
+
+      --shadow-1: 0 1px 0 rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+      --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg-1);
+    color: var(--fg-1);
+    font-family: var(--font-sans);
+    font-size: var(--fs-16);
+    line-height: var(--lh-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--s-12) var(--s-7) var(--s-14, 96px);
+  }
+
+  /* ---- Hero ---- */
+  header.hero {
+    text-align: center;
+    padding: var(--s-8) 0 var(--s-11);
+  }
+
+  .app-mark {
+    display: block;
+    width: 96px;
+    height: 96px;
+    border-radius: 22px; /* brand asset, not UI chrome */
+    margin: 0 auto var(--s-7);
+    box-shadow: var(--shadow-1);
+  }
+
+  h1 {
+    font-family: var(--font-sans);
+    font-size: var(--fs-48);
+    font-weight: var(--w-semibold);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-tight);
+    margin: 0 0 var(--s-3);
+    color: var(--fg-1);
+  }
+
+  .tagline {
+    font-family: var(--font-mono);
+    font-size: var(--fs-13);
+    color: var(--fg-3);
+    letter-spacing: var(--ls-mono);
+    margin: 0;
+  }
+
+  /* ---- Card sections ---- */
+  section {
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-1);
+    padding: var(--s-8);
+    margin: var(--s-6) 0;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    font-weight: var(--w-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--ls-label);
+    color: var(--fg-3);
+    margin: 0 0 var(--s-6);
+    padding: 0 0 var(--s-5);
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  h3 {
+    font-family: var(--font-sans);
+    font-size: var(--fs-16);
+    font-weight: var(--w-semibold);
+    line-height: var(--lh-tight);
+    color: var(--fg-1);
+    margin: var(--s-7) 0 var(--s-4);
+    letter-spacing: 0;
+  }
+
+  h3:first-of-type { margin-top: var(--s-2); }
+
+  p {
+    margin: 0 0 var(--s-6);
+    color: var(--fg-1);
+    line-height: var(--lh-body);
+  }
+
+  p.muted, .meta {
+    color: var(--fg-3);
+    font-size: var(--fs-14);
+  }
+
+  ul {
+    margin: 0 0 var(--s-6);
+    padding-left: var(--s-7);
+  }
+
+  ul li {
+    margin-bottom: var(--s-4);
+    color: var(--fg-1);
+  }
+
+  ul li::marker {
+    color: var(--fg-3);
+  }
+
+  strong {
+    font-weight: var(--w-semibold);
+    color: var(--fg-1);
+  }
+
+  a {
+    color: var(--signal);
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  /* ---- Pill (status / signal label) ---- */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-3);
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    font-weight: var(--w-medium);
+    padding: 3px 10px;
+    border-radius: var(--r-pill);
+    background: var(--signal-soft);
+    color: var(--signal-ink);
+    margin-bottom: var(--s-6);
+    letter-spacing: var(--ls-mono);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .pill { color: #B5C2EF; }
+  }
+
+  .pill::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: var(--r-pill);
+    background: var(--signal);
+  }
+
+  /* ---- License block ---- */
+  .license {
+    font-family: var(--font-mono);
+    font-size: var(--fs-13);
+    line-height: var(--lh-ui);
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: var(--s-7);
+    color: var(--fg-2);
+    overflow-wrap: anywhere;
+  }
+
+  .license p {
+    margin: 0 0 var(--s-5);
+    color: var(--fg-2);
+  }
+
+  .license p:last-child { margin-bottom: 0; }
+
+  /* ---- Footer ---- */
+  footer {
+    text-align: center;
+    margin-top: var(--s-9);
+    padding-top: var(--s-8);
+    border-top: 1px solid var(--line);
+    color: var(--fg-3);
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    letter-spacing: var(--ls-mono);
+  }
+
+  ::selection {
+    background: var(--signal-soft);
+    color: var(--signal-ink);
+  }
+
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--bg-1), 0 0 0 4px var(--signal);
+    border-radius: var(--r-sm);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0ms !important;
+      transition-duration: 0ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="hero">
+    <img class="app-mark" src="fore_icon.png" alt="Foretap app icon">
+    <h1>Foretap</h1>
+    <p class="tagline">A section-based iOS app launcher</p>
+  </header>
+
+  <section>
+    <h2 class="eyebrow">What it is</h2>
+    <p>Foretap replaces the App Library as the primary app-discovery surface on iPhone. Apps are organized into named sections — Pinned, Work, Travel, Reading — that stack vertically on a single screen.</p>
+    <p>Each section has its own sourcing logic: manual lists, recently used, frequently used, time-of-day windows, or Focus-mode bindings. Sections rise to the top automatically when their context applies.</p>
+    <p class="muted">Three home-screen widgets, App Intents, Shortcuts, and Siri integration are included. No subscriptions. No advertising. No tracking.</p>
+  </section>
+
+  <section>
+    <h2 class="eyebrow">Developer</h2>
+    <p>Built and maintained by Shawn M. Brown.</p>
+    <p>Bug reports and feature requests: <a href="mailto:dev@smbrown.org">dev@smbrown.org</a>.</p>
+  </section>
+
+  <section>
+    <h2 class="eyebrow">Privacy policy</h2>
+    <span class="pill">Privacy is paramount</span>
+
+    <p>Foretap exists to help the user. The developer earns nothing from user data. There is no advertising, no analytics SDK, no third-party tracker, no telemetry pipeline, and no user account system.</p>
+
+    <h3>What stays on the device</h3>
+    <p>The following data is created and stored locally on the iPhone, in Foretap's SwiftData store and the app's App Group container. It is never transmitted:</p>
+    <ul>
+      <li>Sections, their names, and the apps assigned to each.</li>
+      <li>Per-app usage events — when which app was tapped — used to compute recent and frequent ordering.</li>
+      <li>Time-window settings, Focus-mode bindings, and per-section preferences.</li>
+      <li>Custom URL schemes added manually for apps not in the bundled catalog.</li>
+      <li>Onboarding state, settings toggles, and widget snapshots.</li>
+    </ul>
+    <p>This data is included in standard iOS device backups (iCloud or local) only when the user has enabled them. Foretap does not sync, upload, or replicate the data itself. Uninstalling the app deletes all of it. Settings → Reset erases it on demand.</p>
+
+    <h3>The one thing that may leave the device</h3>
+    <p>Foretap can optionally help build a shared, public catalog of which URL schemes open which iOS apps. This is the only network feature in the product, and it is strictly limited:</p>
+    <ul>
+      <li><strong>Trigger.</strong> A submission only happens when the user manually adds a custom app, types a URL scheme themselves, and that scheme actually launches the app. Apps picked from the bundled catalog never trigger a submission.</li>
+      <li><strong>Sent.</strong> The verified URL scheme, the App Store bundle identifier, the app's display name, and an opaque per-install device hash (a SHA-256 of a random UUID generated locally on first launch). Nothing else.</li>
+      <li><strong>Not sent.</strong> No identity, Apple ID, IP-derived location, installed-apps list, usage history, sections, or Focus modes.</li>
+      <li><strong>Why a device hash exists.</strong> The server uses it solely to count how many distinct devices have confirmed a given scheme, and to apply a basic rate limit. It is not reversible to a person and is not joined with any other identifier.</li>
+      <li><strong>Where it goes.</strong> A Cloudflare Worker operated by the developer, which writes only the fields above to a Cloudflare D1 database. Verified scheme/bundle pairs are republished as a public catalog so other Foretap users find that app pre-filled.</li>
+      <li><strong>How to turn it off.</strong> Settings → Help build the catalog → off. The toggle is on by default. Disabling it is immediate and complete.</li>
+    </ul>
+
+    <h3>Never collected</h3>
+    <ul>
+      <li>No advertising identifiers (IDFA, IDFV).</li>
+      <li>No location, contacts, calendar, photos, or microphone access.</li>
+      <li>No analytics events, behavioral logs, or crash reports with personal context.</li>
+      <li>No third-party SDKs. The app has zero external Swift Package dependencies.</li>
+      <li>No accounts, no email collection, no passwords.</li>
+    </ul>
+
+    <h3>Children</h3>
+    <p>Foretap is not directed at children under 13 and does not knowingly collect any data from them. Because the app collects no personal data from anyone, this is structurally enforced rather than policy-only.</p>
+
+    <h3>Rights</h3>
+    <p>Because no personal data is collected, there is nothing to request, export, or delete on a server. Settings → Export creates a local JSON archive of sections and preferences. Settings → Reset deletes all local Foretap data.</p>
+
+    <p class="meta">Last updated: 2026-05-01.</p>
+  </section>
+
+  <section>
+    <h2 class="eyebrow">License</h2>
+    <p class="muted">Foretap is released under the MIT License.</p>
+    <div class="license">
+      <p>MIT License</p>
+      <p>Copyright (c) 2026 Shawn M. Brown</p>
+      <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+      <p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+      <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2026 Shawn M. Brown · <a href="mailto:dev@smbrown.org">dev@smbrown.org</a>
+  </footer>
+
+</div>
+</body>
+</html>
